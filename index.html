@@ -56,7 +56,7 @@
             padding: 15px;
             border: 2px solid black;
             box-shadow: 2px 2px 10px gray;
-            width: 500px;  
+            width: 500px;
             max-height: 500px;
             overflow-y: auto;
             z-index: 1000;
@@ -107,24 +107,6 @@
         }
     </style>
 </head>
-
-
-<script>
-    const correctPassword = "1234"; // Change this to your desired password
-
-    function checkPassword() {
-        let enteredPassword = prompt("Please enter the password:");
-        if (enteredPassword !== correctPassword) {
-            alert("Incorrect password. Access denied.");
-            document.body.innerHTML = ""; // Clear the page
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", checkPassword);
-</script>
-
-
-
 <body>
 
     <div class="sidebar">
@@ -218,6 +200,18 @@
     </div>
 
     <script>
+        // === UPDATED PASSWORD PROTECTION ===
+        (function () {
+            const correctPassword = "gayson123"; // <-- UPDATED PASSWORD HERE
+            let entered = prompt("Enter Password:");
+            if (entered !== correctPassword) {
+                alert("Incorrect password! Reload the page and try again.");
+                document.body.innerHTML = ""; // prevent further interaction
+                throw new Error("Unauthorized access");
+            }
+        })();
+
+        // === ORIGINAL SCRIPT ===
         let modalData = JSON.parse(localStorage.getItem("modalData")) || {};
         let currentBoxId = null;
 
@@ -301,39 +295,6 @@
             let savedRows = modalData["LIST OF PENDING WORKS"] || [];
             pendingWorksBox.innerHTML = savedRows.map(text => `<p>${text}</p>`).join("\n");
         }
-
-        function addRow(text = "", date = "") {
-    let container = document.getElementById("rowContainer");
-    let row = document.createElement("div");
-
-    let input = document.createElement("input");
-    input.type = "text";
-    input.value = text;
-    input.style.width = "60%";
-    input.oninput = saveData;
-
-    let dateInput = document.createElement("input");
-    dateInput.type = "date";
-    dateInput.value = date;
-    dateInput.onchange = saveData;
-
-    let deleteButton = document.createElement("span");
-    deleteButton.innerHTML = "&times;";
-    deleteButton.style.cursor = "pointer";
-    deleteButton.style.color = "red";
-    deleteButton.style.marginLeft = "10px";
-    deleteButton.onclick = function () {
-        row.remove();
-        saveData();
-    };
-
-    row.appendChild(input);
-    row.appendChild(dateInput);
-    row.appendChild(deleteButton);
-    container.appendChild(row);
-
-    saveData();
-}
 
         document.addEventListener("DOMContentLoaded", updatePendingWorksBox);
     </script>
