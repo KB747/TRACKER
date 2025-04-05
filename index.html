@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            height: 100vh;
+        }
+        .welcome-message {
+            font-size: 12px;
+            margin-top: 10px;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+        }
+        .box {
+            width: 160px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 2px solid black;
+            cursor: pointer;
+            background-color: #f8f8f8;
+        }
+        .box:hover {
+            background-color: lightgray;
+        }
+        @keyframes blink {
+            50% { background-color: rgb(8, 249, 112); }
+        }
+        .blink {
+            animation: blink 1s infinite;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 15px;
+            border: 2px solid black;
+            box-shadow: 2px 2px 10px gray;
+            width: 500px;  
+            max-height: 500px;
+            overflow-y: auto;
+            z-index: 1000;
+            resize: both;
+        }
+        .modal-content {
+            text-align: center;
+        }
+        .close {
+            cursor: pointer;
+            font-size: 30px;
+            color: red;
+            float: right;
+        }
+        .row-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            max-height: 250px;
+            width: 100%;
+        }
+        .row-container div {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        .row-container input {
+            flex-grow: 1;
+            padding: 5px;
+            font-size: 14px;
+            min-width: 300px;
+            max-width: 100%;
+        }
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .pending-works-box {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+
+<script>
+    const correctPassword = "1234"; // Change this to your desired password
+
+    function checkPassword() {
+        let enteredPassword = prompt("Please enter the password:");
+        if (enteredPassword !== correctPassword) {
+            alert("Incorrect password. Access denied.");
+            document.body.innerHTML = ""; // Clear the page
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", checkPassword);
+</script>
+
+
+
+<body>
+
+    <div class="sidebar">
+        <h3>Search</h3>
+        <input type="text" id="searchBox" placeholder="Enter text..." onkeyup="searchAndHighlight()">
+        <div class="welcome-message">
+            <p><strong>Hi K747!</strong><br>Welcome!<br>Check your pending works below!!!</p>
+        </div>
+        <div class="pending-works-box" id="pendingWorksBox"></div>
+    </div>
+
+    <div class="container" id="boxContainer">
+        <div class="box" onclick="openModal(this)" data-id="LAST UPDATED ON"> LAST UPDATED ON 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="LIST OF PENDING WORKS"> LAST OF PENDING WORKS 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="1">1. FITTER / END USER</div>
+        <div class="box" onclick="openModal(this)" data-id="2">2. FOREMAN</div>
+        <div class="box" onclick="openModal(this)" data-id="3">3. STORE INCHARGE</div>
+        <div class="box" onclick="openModal(this)" data-id="4">4. MANAGER / PROCUREMENT OFFICER</div>
+        <div class="box" onclick="openModal(this)" data-id="5">5. CLIENT REQUIREMENT</div>
+        <div class="box" onclick="openModal(this)" data-id="6">6. AGENT</div>
+        <div class="box" onclick="openModal(this)" data-id="7">7. ENQUIRY CA OR FROM COLLEAGUES</div>
+        <div class="box" onclick="openModal(this)" data-id="8">8. TO LISTOUT EXACT REQUIREMENTS 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="9">9. DRAWING / DATA (PREPARATION /VENDOR)</div>
+        <div class="box" onclick="openModal(this)" data-id="10">10. DRAWING/DATA (WAITING FROM CLIENT)</div>
+        <div class="box" onclick="openModal(this)" data-id="11">11. WAITING FOR PRICES FROM VENDORS 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="12">12. COST SHEET (FREIGHT, PAYMENT, DELIVERY, LD, EXCLUSIONS)</div>
+        <div class="box" onclick="openModal(this)" data-id="13">13. SUCCESSFULLY QUOTED TO CLIENT 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="14">14. HOLD BY CLIENT</div>
+        <div class="box" onclick="openModal(this)" data-id="15">15. ORDER TAKEOVER BY COMPETITOR</div>
+        <div class="box" onclick="openModal(this)" data-id="16">16. NEGOTIATION / DISCOUNT GIVEN BY CA</div>
+        <div class="box" onclick="openModal(this)" data-id="17">17. SUCCESSFULLY CONVERTED TO OA</div>
+        <div class="box" onclick="openModal(this)" data-id="18">18. OA ALLOTMENT PENDING</div>
+        <div class="box" onclick="openModal(this)" data-id="19">19. OA RELEASED, ATTACHMENT PENDING 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="20">20. PIs LIST TO CLIENT AGAINST OA</div>
+        <div class="box" onclick="openModal(this)" data-id="21">21. ADVANCE PENDING FROM CLIENT 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="22">22. REVISION REQUIRED FOR PI</div>
+        <div class="box" onclick="openModal(this)" data-id="23">23. ADVANCE PAYMENT RECEIVED 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="24">24. DRAWING APPROVAL RECEIVED FROM CLIENT</div>
+        <div class="box" onclick="openModal(this)" data-id="25">25. FINAL NEGOTIATION WITH VENDOR (FREIGHT, GST, LD, PAYMENT)</div>
+        <div class="box" onclick="openModal(this)" data-id="26">26. TERMS AGREED, PO TO BE RELEASED</div>
+        <div class="box" onclick="openModal(this)" data-id="27">27. LIST OF PO RELEASED 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="28">28. ADVANCE PAYMENT TO VENDOR IF APPLICABLE</div>
+        <div class="box" onclick="openModal(this)" data-id="29">29. ADVANCE PAID TO VENDOR</div>
+        <div class="box" onclick="openModal(this)" data-id="30">30. DRAWING NEEDS TO BE PREPARED / CORRECTION REQUIRED</div>
+        <div class="box" onclick="openModal(this)" data-id="31">31. DRAWING SUBMITTED TO VENDOR 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="32">32. INSPECTION IS PENDING</div>
+        <div class="box" onclick="openModal(this)" data-id="33">33. PO NEEDS AMENDMENT AT ANYTIME</div>
+        <div class="box" onclick="openModal(this)" data-id="34">34. DELAY IN MATERIAL MANUFACTURING – POs 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="35">35. PARTIAL MATERIAL PRODUCTION PENDING POs</div>
+        <div class="box" onclick="openModal(this)" data-id="36">36. MUST VISIT FOR POs 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="37">37. VENDOR PROCESS REQUIRES CLARIFICATION</div>
+        <div class="box" onclick="openModal(this)" data-id="38">38. INSPECTION CALL TO END USER</div>
+        <div class="box" onclick="openModal(this)" data-id="39">39. RECTIFICATION REQUIRED AS PER END USER</div>
+        <div class="box" onclick="openModal(this)" data-id="40">40. FINAL INSPECTION SUCCESSFULLY DONE</div>
+        <div class="box" onclick="openModal(this)" data-id="41">41. PAYMENT AGAINST PI, MATERIAL READY</div>
+        <div class="box" onclick="openModal(this)" data-id="42">42. READY, BUT DELAY IN MATERIAL PICKUP</div>
+        <div class="box" onclick="openModal(this)" data-id="43">43. MATERIAL REACHED SPEEDWAYS AGAINST VENDOR INVOICE 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="44">44. FULL PAYMENT DONE TO VENDOR</div>
+        <div class="box" onclick="openModal(this)" data-id="45">45. PARTIAL PAYMENT DONE FOR MATERIAL PICKUP</div>
+        <div class="box" onclick="openModal(this)" data-id="46">46. PAYMENT DONE (PARTIAL/FULL), MATERIAL NOT LIFTED</div>
+        <div class="box" onclick="openModal(this)" data-id="47">47. SHIPMENT CLEARANCE FROM CA & CLIENT 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="48">48. PAYMENT AGAINST MATERIAL READINESS</div>
+        <div class="box" onclick="openModal(this)" data-id="49">49. CONTAINER REQUISITION</div>
+        <div class="box" onclick="openModal(this)" data-id="50">50. CONTAINER PICKUP RECEIVED</div>
+        <div class="box" onclick="openModal(this)" data-id="51">51. CONTAINER RECEIVED & STUFFING STATUS 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="52">52. CONTAINER ROLLOVER ISSUE</div>
+        <div class="box" onclick="openModal(this)" data-id="53">53. PORT ENTRY DONE, INVOICE GENERATED 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="54">54. DRAFT INVOICE, BL APPROVAL PENDING</div>
+        <div class="box" onclick="openModal(this)" data-id="55">55. BL PENDING 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="56">56. BL RECEIVED, PAYMENT AGAINST SCAN COPY</div>
+        <div class="box" onclick="openModal(this)" data-id="57">57. TRACKING & COURIER DETAILS TO SHARE</div>
+        <div class="box" onclick="openModal(this)" data-id="58">58. TRACKING & COURIER DETAILS TO BE SHARED</div>
+        <div class="box" onclick="openModal(this)" data-id="59">59. CONTAINER REACHED DESTINATION </div>
+        <div class="box" onclick="openModal(this)" data-id="60">60. MATERIAL RECEIVED BY END USER </div>
+        <div class="box" onclick="openModal(this)" data-id="61">61. PAYMENT PENDING INVOICES, BL 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="62">62. PERFORMANCE ISSUE, REDO / RECTIFICATION</div>
+        <div class="box" onclick="openModal(this)" data-id="63">63. DEBIT NOTE FROM CLIENT</div>
+        <div class="box" onclick="openModal(this)" data-id="64">64. PAYMENT RECEIVED LIST 🔹</div>
+        <div class="box" onclick="openModal(this)" data-id="65">65. WORKING GOOD </div>
+        <div class="box" onclick="openModal(this)" data-id="66">66. BACKUP TASK COMPLETED!!! </div>
+        <div class="box" onclick="openModal(this)" data-id="67">67. ERROR TO CORRECT IN FUTURE </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modal-text">Data will appear here</p>
+            <button onclick="addRow()">Add Row</button>
+            <div class="row-container" id="rowContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let modalData = JSON.parse(localStorage.getItem("modalData")) || {};
+        let currentBoxId = null;
+
+        function openModal(element) {
+            currentBoxId = element.getAttribute("data-id");
+            document.getElementById("modal-text").innerText = element.innerText;
+            document.getElementById("rowContainer").innerHTML = "";
+
+            let savedRows = modalData[currentBoxId] || [];
+            if (!Array.isArray(savedRows)) {
+                savedRows = [];
+            }
+
+            savedRows.forEach(text => addRow(text));
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+            updatePendingWorksBox();
+        }
+
+        function addRow(text = "") {
+            let container = document.getElementById("rowContainer");
+            let row = document.createElement("div");
+
+            let input = document.createElement("input");
+            input.type = "text";
+            input.value = text;
+            input.style.width = "100%";
+            input.oninput = saveData;
+
+            let deleteButton = document.createElement("span");
+            deleteButton.innerHTML = "&times;";
+            deleteButton.style.cursor = "pointer";
+            deleteButton.style.color = "red";
+            deleteButton.style.marginLeft = "10px";
+            deleteButton.onclick = function () {
+                row.remove();
+                saveData();
+            };
+
+            row.appendChild(input);
+            row.appendChild(deleteButton);
+            container.appendChild(row);
+
+            saveData();
+        }
+
+        function saveData() {
+            if (currentBoxId) {
+                let rows = Array.from(document.querySelectorAll("#rowContainer input"));
+                modalData[currentBoxId] = rows.map(input => input.value);
+                localStorage.setItem("modalData", JSON.stringify(modalData));
+            }
+        }
+
+        function searchAndHighlight() {
+            let searchText = document.getElementById("searchBox").value.toLowerCase();
+            let boxes = document.querySelectorAll(".box");
+
+            boxes.forEach(box => {
+                box.classList.remove("blink");
+                let boxId = box.getAttribute("data-id");
+                let storedText = modalData[boxId] || [];
+
+                if (!Array.isArray(storedText)) {
+                    storedText = [];
+                }
+
+                let combinedText = storedText.join(" ").toLowerCase() + " " + box.innerText.toLowerCase();
+
+                if (searchText && combinedText.includes(searchText)) {
+                    box.classList.add("blink");
+                }
+            });
+        }
+
+        function updatePendingWorksBox() {
+            let pendingWorksBox = document.getElementById("pendingWorksBox");
+            let savedRows = modalData["LIST OF PENDING WORKS"] || [];
+            pendingWorksBox.innerHTML = savedRows.map(text => `<p>${text}</p>`).join("\n");
+        }
+
+        function addRow(text = "", date = "") {
+    let container = document.getElementById("rowContainer");
+    let row = document.createElement("div");
+
+    let input = document.createElement("input");
+    input.type = "text";
+    input.value = text;
+    input.style.width = "60%";
+    input.oninput = saveData;
+
+    let dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.value = date;
+    dateInput.onchange = saveData;
+
+    let deleteButton = document.createElement("span");
+    deleteButton.innerHTML = "&times;";
+    deleteButton.style.cursor = "pointer";
+    deleteButton.style.color = "red";
+    deleteButton.style.marginLeft = "10px";
+    deleteButton.onclick = function () {
+        row.remove();
+        saveData();
+    };
+
+    row.appendChild(input);
+    row.appendChild(dateInput);
+    row.appendChild(deleteButton);
+    container.appendChild(row);
+
+    saveData();
+}
+
+        document.addEventListener("DOMContentLoaded", updatePendingWorksBox);
+    </script>
+
+</body>
+</html>
